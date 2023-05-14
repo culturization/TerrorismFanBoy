@@ -1,0 +1,9 @@
+#/usr/bin/env ruby
+
+require './lib/tfb'
+
+include TFB
+
+bot = Bot.new('Bot MTA5NzIxMTM4MzI4NTgwOTI4Mw.GwePE0.dvk7SMzpnKkXDOVubtZ3WPTXJPRlLa2yZK_3OQ', 1 << 9 | 1 << 15, 'vb!')
+bot.include(ModerationContainer, MiscContainer)
+bot.run
