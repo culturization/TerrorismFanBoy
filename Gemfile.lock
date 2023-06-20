@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/culturization/wrap
-  revision: 2aca5f06f767a81560e1a97a5378d7c713b5557b
+  revision: 10b181709710c4ed3697f9fa828c32af21cde3be
   branch: main
   specs:
     wrap (0.2.2)
@@ -40,6 +40,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  activesupport (~> 7.0)
   dotenv
   rake
   require_all

@@ -5,7 +5,7 @@ require './config/env'
 namespace :db do
   task :migrate do
     require './config/db'
-    require_all './db/migrate'
+    require './db/migrations'
     [
       CreateGuilds,
       CreateMembers,
