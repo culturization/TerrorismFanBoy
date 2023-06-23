@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/culturization/wrap
-  revision: 10b181709710c4ed3697f9fa828c32af21cde3be
+  revision: ac2557a0d8f82f866d47215309423a4075c513b7
   branch: main
   specs:
     wrap (0.2.2)

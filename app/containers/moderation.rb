@@ -4,6 +4,20 @@ module Containers
   module Moderation
     extend Wrap::Container
 
+    command :ban, desc: 'Забанить нахуй', perms: (1 << 2).to_s do
+      option name: :user, description: 'Цель', type: 6, required: true
+
+      handler do |_bot, act|
+        target = act.guild.member(act.opts['user'].value)
+
+        next 'Недостаточно прав' if target.get && !act.member.higher_than?(target)
+
+        target.ban
+
+        'Пользователь успешно забанен'
+      end
+    end
+
 =begin
     #register_command(
     #  name: 'ban',
