@@ -14,6 +14,7 @@ class CreateGuilds < ActiveRecord::Migration[7.0]
   def change
     create_table :guilds do |t|
       t.integer :guild_id
+      t.integer :xp_multiplier
     end
   end
 end
@@ -21,8 +22,8 @@ end
 class CreateMembers < ActiveRecord::Migration[7.0]
   def change
     create_table :members do |t|
-      t.belongs_to :guild
-      t.integer :user_id
+      t.belongs_to :guild, null: false
+      t.integer :user_id, null: false
       t.integer :rep, default: 0
       t.integer :xp, default: 0
     end

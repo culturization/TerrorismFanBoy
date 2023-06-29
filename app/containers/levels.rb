@@ -3,44 +3,52 @@
 module LevelContainer
   extend Wrap::Container
 
-=begin
-    command 'xp' do |_bot, act|
-      case (group = act.command_options.first[1]).name
-      when 'multiplier'
-        guild_model = Guild.find_by_guild_id(act.guild.id)
+  command :xp, desc: 'Операции с опытом', perms: ?0 do
+    subcommand name: :set_multiplier, desc: 'Установить значение множителя опыта' do
+      option name: :multiplier, description: 'Собственно множитель', type: 4, required: true
 
-        case group.options.first[1]
-        when 'set'
-          guild_model.multiplier = group['multiplier'].value
+      handler do
+        current_guild.xp_multiplier = ctx.opts['multiplier'].value
 
-          next guild_model.errors.full_messages unless guild_model.save
+        next current_guild.errors.full_messages unless current_guild.save
 
-          'Множитель опыта сохранен'
-        when 'view'
-          "Множитель опыта: #{guild_model.multiplier}"
-        end
-      when 'view', 'set', 'add'
-        member_model = Member.find_or_create_by(guild_id: act.guild.id, user_id: group['user'])
-
-        case group.name
-        when 'view' then "Опыт участника <@#{member_model.user_id}>: #{member_model.xp}"
-        when 'set', 'add'
-          group.name == 'set' ? member_model.xp = group['xp'] : member_model.xp += group['xp']
-
-          next member_model.errors.full_messages unless member_model.save
-
-          'Операция прошла успешно'
-        end
+        'Множитель опыта сохранен'
       end
     end
-=end
 
-  on_event :message_create do |_data|
+    subcommand name: :set, desc: 'Установить значение опыта у пользователя' do
+      option name: :user, description: 'Так называемый участник сервера', type: 6, required: true
+      option name: :xp, description: 'Значение опыта', type: 4, required: true
+
+      handler do
+        opts_member.xp = ctx.opts['xp'].value
+
+        next opts_member.errors.full_messages unless opts_member.save
+
+        "Операция прошла успешно, у <@#{opts_member.user_id}> теперь #{opts_member.xp} опыта"
+      end
+    end
+
+    subcommand name: :add, desc: 'Добавить опыт пользователю' do
+      option name: :user, description: 'Участник', type: 6, required: true
+      option name: :xp, description: 'Значение, на которое будет увеличен показатель опыта', type: 4, required: true
+
+      handler do
+        opts_member.xp += ctx.opts['xp'].value
+
+        next opts_member.errors.full_messages unless opts_member.save
+
+        "Операция прошла успешно, у <@#{opts_member.user_id}> теперь #{opts_member.xp} опыта"
+      end
+    end
+  end
+
+  on_event :message_create do |msg|
     next
 
     @last_xp_msgs ||= {}
 
-    guild_model = Guild.find_by_guild_id(act.guild.id)
+    guild = @bot.guild(msg.guild_id)
     member_params = { guild_id: act.guild.id, user_id: act.user_id }
     member_model = Member.find_by(member_params)
 
