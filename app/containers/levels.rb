@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-module Containers
-  module Levels
-    extend Wrap::Container
+module LevelContainer
+  extend Wrap::Container
 
 =begin
     command 'xp' do |_bot, act|
@@ -36,23 +35,24 @@ module Containers
     end
 =end
 
-    event 'MESSAGE_CREATE' do |_bot, _data|
-      @last_xp_msgs ||= {}
+  on_event :message_create do |_data|
+    next
 
-      guild_model = Guild.find_by_guild_id(act.guild.id)
-      member_params = { guild_id: act.guild.id, user_id: act.user_id }
-      member_model = Member.find_by(member_params)
+    @last_xp_msgs ||= {}
 
-      next Member.create(member_params) if member_model.nil? # create member model and return
+    guild_model = Guild.find_by_guild_id(act.guild.id)
+    member_params = { guild_id: act.guild.id, user_id: act.user_id }
+    member_model = Member.find_by(member_params)
 
-      time = @last_xp_msgs[member_model.id]
+    next Member.create(member_params) if member_model.nil? # create member model and return
 
-      next if time && Time.now - time < 60 # minute should pass
+    time = @last_xp_msgs[member_model.id]
 
-      @last_xp_msgs[member_model.id] = Time.now
-      member_model.xp += rand(1..5) * guild_model.multiplier
+    next if time && Time.now - time < 60 # minute should pass
 
-      # TODO: level roles
-    end
+    @last_xp_msgs[member_model.id] = Time.now
+    member_model.xp += rand(1..5) * guild_model.multiplier
+
+    # TODO: level roles
   end
 end

@@ -24,6 +24,7 @@ class CreateMembers < ActiveRecord::Migration[7.0]
       t.belongs_to :guild
       t.integer :user_id
       t.integer :rep, default: 0
+      t.integer :xp, default: 0
     end
 
     add_index :members, %i[guild_id id], unique: true

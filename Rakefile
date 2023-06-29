@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require './config/env'
+require './app/bot'
 
 namespace :db do
   task :migrate do
-    require './config/db'
     require './db/migrations'
     [
       CreateGuilds,
@@ -24,10 +23,11 @@ end
 
 namespace :discord do
   task :overwrite_commands do
-    require './lib/tfb'
-    require 'dotenv/load'
+    @bot.on_event :ready do
+      @bot.overwrite_commands
+      @bot.stop
+    end
 
-    bot = TFB::Bot.new(ENV['TOKEN'])
-    bot.overwrite_commands
+    @bot.run
   end
 end
